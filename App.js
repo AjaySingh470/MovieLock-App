@@ -1,12 +1,21 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
 
+import Appnavigation from './navigation/Appnavigation';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { StyleSheet } from 'react-native';
+import { LogBox } from 'react-native';
+// import { ViewPropTypes } from 'deprecated-react-native-prop-types';
+
+// LogBox.ignoreLogs([
+//   "ViewPropTypes will be removed",
+//   "ColorPropType will be removed",
+//   ])
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaProvider className=" h-full bg-neutral-800">
+
+    <Appnavigation></Appnavigation>
+    </SafeAreaProvider>
   );
 }
 
