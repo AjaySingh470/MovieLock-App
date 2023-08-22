@@ -42,7 +42,12 @@ const MovieList = ({title , data , hideSeeAll}) => {
                                 ></Image>
                             </View>
                             <Text className="text-neutral-400 text-center translate-x-1/3 " >
-                                { item?.title?.length > 10 ? item?.title?.slice(0,14)+'...' : item.title }
+                               {
+                               item.name ? item?.name?.length > 10 ? item?.name?.slice(0,14)+'...' : item.name 
+                               : item?.title?.length > 10 ? item?.title?.slice(0,14)+'...' : item.title 
+                            
+                            }
+                                
                             </Text>
                          </TouchableOpacity>
                         )

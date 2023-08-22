@@ -13,7 +13,7 @@ const SearchScreen = () => {
     const [results,setResults] = useState([])
     const [loading ,setLoading] = useState(false);
     // const [query , setQuery] = useState("Aveng")
-    const handleSearch =value=>{
+    const handleSearch =(value)=>{
         // console.log(value)
         if(value && value.length>2)
         {
@@ -27,10 +27,14 @@ const SearchScreen = () => {
                     page: '1'
                 }
             ).then(data=>{
-                setResults(data.results);
-                // console.log(data)
+                
+                
+                setResults(data.results.filter((item)=>{ return item.media_type !== "person";
+                }));
+                // console.log(results)
                 setLoading(false);
             })
+
         }
         else{
             setLoading(false);
@@ -74,7 +78,7 @@ const SearchScreen = () => {
             
                 <View className='flex flex-row flex-wrap justify-between '>
                 {
-                    results.length > 0 ? results.map((item,index)=>{
+                    results?.length > 0 ? results?.map((item,index)=>{
                         return (
                             <TouchableOpacity key={index} className='' onPress={()=>navigation.navigate('Movie',item)} >
                                 <View className='space-y-1 mb-4'  >
@@ -84,9 +88,13 @@ const SearchScreen = () => {
                                         height : height*0.3
                                     }}
                                     source={{uri : image342(item?.poster_path) || fallbackMoviePoster}} ></Image>
-                                    <Text className='text-neutral-100 text-center ' >{
-                                        item?.title.length > 22 ? item?.title.slice(0,22)+'...' : item?.title
-                                    }</Text>
+                                    <Text className='text-neutral-100 text-center ' >
+                                        {
+                                            item.name ? item?.name?.length > 10 ? item?.name?.slice(0,14)+'...' : item.name 
+                                            : item?.title?.length > 10 ? item?.title?.slice(0,14)+'...' : item.title 
+                                         
+                                        }
+                                    </Text>
                                 </View>
 
                             </TouchableOpacity>

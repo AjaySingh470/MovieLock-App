@@ -7,7 +7,7 @@ import { useNavigation, useRoute } from '@react-navigation/native'
 import { LinearGradient } from 'expo-linear-gradient';
 import Casts from '../components/Casts'
 import MovieList from '../components/MovieList'
-import { fallbackMoviePoster, fetchCredits, fetchMovieDetails, fetchSimilarMovies, image500} from '../api/movieapi'
+import { fallbackMoviePoster, fetchCredits, fetchMovieDetails, fetchSimilarMovies, fetchTVshowDetails, fetchTvShowSimilar, fetchTvshowCredits, image500} from '../api/movieapi'
 import Loading from '../components/Loading'
 
 
@@ -22,18 +22,28 @@ const MovieScreen = () => {
   const [isFav , setIsFav] = useState(false);
   const [cast , setCast] = useState([1,2,3,4,5]);
   const [similar,setSimilar] = useState([]);
+  const [istvShow , setIstvShow] = useState(false);
+  const [tvShowDetails , setTvShowDetails] = useState([]);
   useEffect(()=>{
-    // console.log(item.id)
+
     setLoading(true);
-    getMovieDetails(item.id)
-    getMovieCast(item.id)
-    getSimilarMovies(item.id)
+    if(item?.title?.length>0)
+    {
+      getMovieDetails(item.id)
+      getMovieCast(item.id)
+      getSimilarMovies(item.id)
+    }
+    else{
+      setIstvShow(true);
+      getTvshowdetails(item.id)
+      getTvShowCast(item.id);
+      getSimilarTvShows(item.id);
+    }
     setLoading(false);
   },[item]);
 
   const getMovieDetails = async id=>{
     const data = await fetchMovieDetails(id)
-    // console.log(data)
     if(data)
     {
       setMovieDetails(data);
@@ -41,7 +51,13 @@ const MovieScreen = () => {
   }
   const getMovieCast = async id=>{
     const data = await fetchCredits(id);
-    // console.log(data);
+    if(data && data.cast)
+    {
+      setCast(data.cast)
+    }
+  }
+  const getTvShowCast = async id=>{
+    const data = await fetchTvshowCredits(id);
     if(data && data.cast)
     {
       setCast(data.cast)
@@ -54,6 +70,22 @@ const MovieScreen = () => {
       setSimilar(data.results);
     }
   }
+  const getSimilarTvShows = async id=>{
+    const data = await fetchTvShowSimilar(id);
+    if(data && data.results)
+    {
+      setSimilar(data.results);
+    }
+  }
+
+  const getTvshowdetails = async id =>{
+    const data = await fetchTVshowDetails(id);
+    if(data)
+    {
+      setMovieDetails(data);
+    }
+  }
+
   return (
    
     <ScrollView
@@ -99,7 +131,7 @@ const MovieScreen = () => {
    </View>
    <View style={{marginTop : -(height*0.08)}} className='space-y-2 px-3 ' >
         <Text className='text-white text-center  text-3xl font-bold tracking-wider'>
-          {movieDetails?.title}
+          {movieDetails?.title ? movieDetails?.title : movieDetails?.name}
         </Text>
         {/*status , release year , length */}
         {
@@ -107,7 +139,7 @@ const MovieScreen = () => {
 
             <Text className='text-neutral-400 text-center font-light text-base ' >
               {/* {Released    2022  •  120mins   }  */}
-              {movieDetails?.status } • {movieDetails?.release_date?.slice(0,4)} • {movieDetails.runtime + ' mins'}
+              {movieDetails?.status }  •  { movieDetails?.release_date ? movieDetails?.release_date?.slice(0,4) : movieDetails?.first_air_date?.slice(0,4)}  •  { movieDetails?.runtime ?` ${movieDetails?.runtime}+'mins'`: `${movieDetails?.number_of_seasons+ '-season'}`}
             </Text>
           ) : null
         }
@@ -116,7 +148,7 @@ const MovieScreen = () => {
           {
             movieDetails?.genres?.length>0 ?  movieDetails?.genres?.map((item,index)=>{
               
-              let showDot = index+1 !== movieDetails?.genres.length
+              let showDot = index+1 !== movieDetails?.genres?.length
 
               return (
               <Text key={index}  className='text-neutral-400 pl-2 text-center font-semibold text-base ' >
@@ -136,7 +168,7 @@ const MovieScreen = () => {
           <Casts  cast = {cast} navigation={navigation}></Casts>
 
         {/*Similar Movies */}
-              { similar.length > 0 ? <MovieList title='Similar Movies' data={similar} hideSeeAll={false}></MovieList> : null}
+              { similar?.length > 0 ? <MovieList title={ istvShow ? `Similar TvShow` : 'Similar Movies'  } data={similar} hideSeeAll={false}></MovieList> : null}
     </View>
 
   </ScrollView>

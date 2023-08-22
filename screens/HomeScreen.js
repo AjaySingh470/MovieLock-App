@@ -9,11 +9,13 @@ import TrendingMovies from '../components/TrendingMovies'
 import MovieList from '../components/MovieList'
 import Loading from '../components/Loading'
 import { useNavigation } from '@react-navigation/native'
-import { fetchRatedMovies, fetchTrendingMovies, fetchUpcomingMovies } from '../api/movieapi'
+import { fetchRatedMovies, fetchTrendingMovies, fetchTrendingTvShows, fetchTvShowsRated, fetchUpcomingMovies } from '../api/movieapi'
 const HomeScreen = () => {
   const [trending,setTrending] = useState([]);
   const [upcoming,setUpcoming] = useState([]);
   const [toprated , setToprated] = useState([]);
+  const [trendingTVShows , setTrendingTVShows] = useState([]); 
+  const [ratedTVshows , setRatedTVshows] = useState([]);
   const [loading , setLoading] = useState(false);
   const navigation = useNavigation();
   //////
@@ -32,6 +34,21 @@ const HomeScreen = () => {
       setUpcoming(data.results);
     }
   }
+  const getTrendingTvShows = async ()=>{
+    const data = await fetchTrendingTvShows();
+    if(data && data.results)
+    {
+      setTrendingTVShows(data.results)
+    }
+  }
+
+  const getTopRatedTVShows = async ()=>{
+    const data = await fetchTvShowsRated();
+    if(data && data.results)
+    {
+      setRatedTVshows(data.results)
+    }
+  }
 
   const getTopRatedMovies = async ()=>{
     const data = await fetchRatedMovies();
@@ -47,6 +64,8 @@ const HomeScreen = () => {
      getTrendingMovies();
      getUpcomingMovies();
      getTopRatedMovies();
+     getTrendingTvShows();
+     getTopRatedTVShows();
      setLoading(false);
   },[]);
 
@@ -73,6 +92,8 @@ const HomeScreen = () => {
         {/* upcoming movies */ }
       { upcoming.length>0 &&  <MovieList title="Upcoming" hideSeeAll={true} data={upcoming} ></MovieList>}
       { toprated.length>0 && <MovieList title="Top Rated" data={toprated} hideSeeAll={true} ></MovieList>}
+      {trendingTVShows.length>0 && <MovieList title='TV Shows - Trending' data={trendingTVShows} ></MovieList>}
+      {ratedTVshows.length>0 && <MovieList title='TV Shows - Top Rated' data={ratedTVshows} ></MovieList>}
         </ScrollView> 
       }
         </SafeAreaView>

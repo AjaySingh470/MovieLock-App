@@ -23,14 +23,40 @@ const apiCall = async(url,params)=>{
 }
 
 const personDetails = id=>`${baseUrl}/person/${id}?api_key=${API_KEY}`
-const personSimilarMovies = id=>`${baseUrl}/person/${id}/movie_credits?api_key=${API_KEY}`
+const personSimilarMovies = id=>`${baseUrl}/person/${id}/combined_credits?api_key=${API_KEY}`
 const movieDetails = id=> `${baseUrl}/movie/${id}?api_key=${API_KEY}`
 const movieCredits = id=> `${baseUrl}/movie/${id}/credits?api_key=${API_KEY}`
 const movieSimilar = id=> `${baseUrl}/movie/${id}/recommendations?api_key=${API_KEY}`
-const trendingMovies = `${baseUrl}/trending/movie/day?api_key=${API_KEY}`
+const trendingMovies = `${baseUrl}/trending/movie/week?api_key=${API_KEY}`
 const upcomingMovies = `${baseUrl}/movie/upcoming?api_key=${API_KEY}`
-const topRatedMovies = `${baseUrl}/movie/top_rated?api_key=${API_KEY}&region=IN&sort_by=vote_average.desc`
-const searchMovie = `${baseUrl}/search/movie?api_key=${API_KEY}`
+const topRatedMovies = `${baseUrl}/movie/top_rated?api_key=${API_KEY}&sort_by=vote_average`
+const searchMovie = `${baseUrl}/search/multi?api_key=${API_KEY}`
+
+
+//======================================TV SHOWS=============================================
+
+const tvShowsTrending =`${baseUrl}/trending/tv/day?api_key=${API_KEY}&language=en-US&sort_by=popularity.desc`;
+const tvShowsTopRated =`${baseUrl}/tv/top_rated?api_key=${API_KEY}&language=en-US&sort_by=vote_average`;
+const tvShowDetails =  id=>`${baseUrl}/tv/${id}?api_key=${API_KEY}`;
+const tvShowsCredits = id => `${baseUrl}/tv/${id}/credits?api_key=${API_KEY}`;
+const tvShowSimilar = id => `${baseUrl}/tv/${id}/recommendations?api_key=${API_KEY}`;
+//===================================================================================
+
+export const fetchTvShowSimilar = (id)=>{
+    return apiCall(tvShowSimilar(id));
+}
+
+export const fetchTvshowCredits = (id)=>{
+    return apiCall(tvShowsCredits(id));
+}
+
+export const fetchTVshowDetails = (id)=>{
+    return apiCall(tvShowDetails(id));
+}
+
+export const fetchTvShowsRated = ()=>{
+    return apiCall(tvShowsTopRated);
+}
 
 export const fetchPersonSimilarMovies = (id)=>{
     return apiCall(personSimilarMovies(id))
@@ -58,6 +84,10 @@ export const fetchSimilarMovies = (id)=>{
 }
 export const fetchPersonDetails = (id)=>{
     return apiCall(personDetails(id));
+}
+
+export const fetchTrendingTvShows = ()=>{
+    return apiCall(tvShowsTrending)
 }
 
 
